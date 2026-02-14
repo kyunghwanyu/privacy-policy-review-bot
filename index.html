@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>개인정보 컴플라이언스 검토 봇</title>
+    <style>
+      :root {
+        color-scheme: light;
+        font-family: "Noto Sans KR", "Apple SD Gothic Neo", sans-serif;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        background: #f3f6fb;
+        color: #1f2937;
+      }
+
+      .layout {
+        min-height: 100vh;
+        display: grid;
+        grid-template-columns: 360px 1fr;
+      }
+
+      .sidebar {
+        background: #ffffff;
+        border-right: 1px solid #e5e7eb;
+        padding: 24px;
+      }
+
+      .content {
+        padding: 24px;
+      }
+
+      h1 {
+        margin: 0 0 24px;
+        font-size: 20px;
+      }
+
+      .description {
+        margin: -16px 0 24px;
+        color: #6b7280;
+        font-size: 14px;
+      }
+
+      .section {
+        margin-bottom: 16px;
+        padding: 16px;
+        border: 1px solid #e5e7eb;
+        border-radius: 10px;
+        background: #fbfdff;
+      }
+
+      .section h2 {
+        margin: 0 0 12px;
+        font-size: 16px;
+      }
+
+      .options {
+        display: grid;
+        gap: 8px;
+      }
+
+      label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 15px;
+        cursor: pointer;
+      }
+
+      .disabled {
+        opacity: 0.45;
+        pointer-events: none;
+      }
+
+      .selection-note {
+        margin-top: 10px;
+        font-size: 13px;
+        color: #2563eb;
+      }
+
+      .placeholder {
+        height: 100%;
+        display: grid;
+        place-content: center;
+        border: 1px dashed #cbd5e1;
+        border-radius: 10px;
+        color: #64748b;
+        background: #fff;
+        text-align: center;
+        line-height: 1.6;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="layout">
+      <aside class="sidebar">
+        <h1>검토 대상 선택</h1>
+        <p class="description">
+          약관검토자/서비스 개발자가 검토할 문서 유형과 작업 유형을 선택하세요.
+        </p>
+
+        <section class="section" aria-labelledby="depth1-title">
+          <h2 id="depth1-title">1뎁스: 문서 유형</h2>
+          <div class="options" role="radiogroup" aria-label="문서 유형 선택">
+            <label>
+              <input type="radio" name="docType" value="policy" />
+              처리방침
+            </label>
+            <label>
+              <input type="radio" name="docType" value="consent" />
+              동의서
+            </label>
+          </div>
+        </section>
+
+        <section class="section disabled" id="policyModeSection" aria-labelledby="depth2-title">
+          <h2 id="depth2-title">2뎁스: 처리방침 유형</h2>
+          <div class="options" role="radiogroup" aria-label="처리방침 유형 선택">
+            <label>
+              <input type="radio" name="policyMode" value="new" disabled />
+              신규(제정)
+            </label>
+            <label>
+              <input type="radio" name="policyMode" value="revise" disabled />
+              변경(개정)
+            </label>
+          </div>
+          <p class="selection-note" id="depthNote">처리방침을 선택하면 2뎁스가 활성화됩니다.</p>
+        </section>
+      </aside>
+
+      <section class="content">
+        <div class="placeholder">
+          우측 영역은 다음 단계에서 문서 입력/검토 결과 UI로 확장됩니다.
+        </div>
+      </section>
+    </main>
+
+    <script>
+      const docTypeRadios = document.querySelectorAll('input[name="docType"]');
+      const policyModeSection = document.getElementById('policyModeSection');
+      const policyModeRadios = document.querySelectorAll('input[name="policyMode"]');
+      const depthNote = document.getElementById('depthNote');
+
+      function setPolicyModeEnabled(enabled) {
+        policyModeSection.classList.toggle('disabled', !enabled);
+        policyModeRadios.forEach((input) => {
+          input.disabled = !enabled;
+          if (!enabled) {
+            input.checked = false;
+          }
+        });
+
+        depthNote.textContent = enabled
+          ? '처리방침 작업 유형을 선택하세요.'
+          : '처리방침을 선택하면 2뎁스가 활성화됩니다.';
+      }
+
+      docTypeRadios.forEach((radio) => {
+        radio.addEventListener('change', (event) => {
+          setPolicyModeEnabled(event.target.value === 'policy');
+        });
+      });
+    </script>
+  </body>
+</html>
